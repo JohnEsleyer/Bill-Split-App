@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:google_fonts/google_fonts.dart";
+import 'results.dart';
 
 class BillSplit extends StatefulWidget {
   @override
@@ -7,11 +8,26 @@ class BillSplit extends StatefulWidget {
 }
 
 class _BillSplitState extends State<BillSplit> {
+  double friendsvalue = 0.0;
+  double tip = 0.0;
+  String tax = '0';
+  String bill = '';
+
   Widget buildButton(String text) {
     return Expanded(
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(padding: EdgeInsets.all(20)),
-        onPressed: () {},
+        onPressed: () {
+          if (text == '-') {
+            setState(() {
+              bill = "";
+            });
+          } else {
+            setState(() {
+              bill += text;
+            });
+          }
+        },
         child: Text(
           text,
           style: GoogleFonts.montserrat(
@@ -57,7 +73,7 @@ class _BillSplitState extends State<BillSplit> {
                                 fontSize: 20, fontWeight: FontWeight.w700),
                           ),
                           Text(
-                            "34",
+                            bill,
                             style: GoogleFonts.montserrat(
                                 fontSize: 25, fontWeight: FontWeight.w700),
                           ),
@@ -80,9 +96,11 @@ class _BillSplitState extends State<BillSplit> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("10", style: infostyle),
-                              Text("14 %", style: infostyle),
-                              Text("15", style: infostyle),
+                              Text(friendsvalue.round().toString(),
+                                  style: infostyle),
+                              Text("$tax%", style: infostyle),
+                              Text("\$${tip.round().toString()}",
+                                  style: infostyle),
                             ],
                           ),
                         ],
@@ -109,7 +127,11 @@ class _BillSplitState extends State<BillSplit> {
                   activeColor: Colors.orange,
                   inactiveColor: Colors.grey,
                   value: 12,
-                  onChanged: (value) {}),
+                  onChanged: (value) {
+                    setState(() {
+                      friendsvalue = value;
+                    });
+                  }),
               SizedBox(height: 10),
               Row(
                 children: [
@@ -134,12 +156,16 @@ class _BillSplitState extends State<BillSplit> {
                                 width: 40,
                                 height: 40,
                                 child: FloatingActionButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    setState(() {
+                                      tip--;
+                                    });
+                                  },
                                   backgroundColor: Colors.grey[400],
                                   child:
                                       Icon(Icons.remove, color: Colors.black),
                                 )),
-                            Text("20",
+                            Text("\$${tip.round().toString()}",
                                 style: GoogleFonts.montserrat(
                                     fontSize: 27,
                                     color: Colors.black,
@@ -148,7 +174,11 @@ class _BillSplitState extends State<BillSplit> {
                               width: 40,
                               height: 40,
                               child: FloatingActionButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                                    tip++;
+                                  });
+                                },
                                 backgroundColor: Colors.grey[400],
                                 child: Icon(Icons.add, color: Colors.black),
                               ),
@@ -169,6 +199,11 @@ class _BillSplitState extends State<BillSplit> {
                       padding: const EdgeInsets.all(7.0),
                       child: TextField(
                         keyboardType: TextInputType.number,
+                        onChanged: (value) {
+                          setState(() {
+                            tax = value;
+                          });
+                        },
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
@@ -215,7 +250,7 @@ class _BillSplitState extends State<BillSplit> {
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
-                onPressed: () {},
+                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context)=> ResultsPage(bill, tax, friendsvalue, tip))),
                 child: Text(
                   "Split Bill",
                   style: GoogleFonts.montserrat(
